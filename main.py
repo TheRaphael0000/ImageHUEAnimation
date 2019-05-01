@@ -4,8 +4,20 @@ import numpy as np
 import time
 import os
 
-imagePath = "2.jpg"
+imagePath = "1.jpg"
+# Simplexnoise steps
+dX = 0.05
+dY = 0.05
+dT = 0.01 # animation speed
 
+# Frame rate
+FRAME_RATE = 30
+
+EFFECT_STRENGTH = 200 # between 0 and 255
+
+EXIT_KEY = ord('q')
+
+# Loadings
 imagePath = os.path.join(os.getcwd(), imagePath)
 
 if not os.path.isfile(imagePath):
@@ -20,22 +32,11 @@ if img is None:
 hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 h, s, v = cv2.split(hsv)
 
-# Simplexnoise steps
-dX = 0.05
-dY = 0.05
-dT = 0.01 # animation speed
-t = 0
-
-# Frame rate
-FRAME_RATE = 30
-FRAME_PERIODE = 1000 // FRAME_RATE
-
-EFFECT_STRENGTH = 100 # between 0 and 255
-
-EXIT_KEY = ord('q')
-
 simplex = OpenSimplex()
-noise = np.zeros((20,20)) # can be augemented
+noise = np.zeros((20,20))
+
+FRAME_PERIODE = 1000 // FRAME_RATE
+t = 0
 
 def mili():
     return int(round(time.time() * 1000))
