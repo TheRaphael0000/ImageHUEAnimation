@@ -4,16 +4,18 @@ import numpy as np
 import time
 import os
 
-imagePath = "1.jpg"
+imagePath = "12287109_p0.jpg"
 # Simplexnoise steps
 dX = 0.05
 dY = 0.05
-dT = 0.01 # animation speed
+dT = 0.01  # animation speed
+
+INPUT_SCALE = 0.2
 
 # Frame rate
 FRAME_RATE = 30
 
-EFFECT_STRENGTH = 200 # between 0 and 255
+EFFECT_STRENGTH = 50  # between 0 and 255
 
 EXIT_KEY = ord('q')
 
@@ -29,17 +31,21 @@ if img is None:
     print(imagePath, "is not an image")
     exit()
 
+img = cv2.resize(img, None, fx=INPUT_SCALE, fy=INPUT_SCALE)
+
 hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 h, s, v = cv2.split(hsv)
 
 simplex = OpenSimplex()
-noise = np.zeros((20,20))
+noise = np.zeros((20, 20))
 
 FRAME_PERIODE = 1000 // FRAME_RATE
 t = 0
 
+
 def mili():
     return int(round(time.time() * 1000))
+
 
 while True:
     lastT = mili()
@@ -47,8 +53,8 @@ while True:
     # Create the noise plane
     for x in range(noise.shape[0]):
         for y in range(noise.shape[1]):
-            n = simplex.noise3d(x*dX, y*dY, t)
-            noise[x,y] = n
+            n = simplex.noise3d(x * dX, y * dY, t)
+            noise[x, y] = n
     t += dT
 
     # Resize it to fit the image
@@ -67,6 +73,7 @@ while True:
     deltaT = FRAME_PERIODE - mili() - lastT
     deltaT = np.array(deltaT)
     np.clip(deltaT, 1, FRAME_PERIODE, out=deltaT)
+
 
     if cv2.waitKey(deltaT) == EXIT_KEY:
         exit()
